@@ -1,0 +1,15 @@
+{
+  "name": "proofhaus",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Economic security you run on every deploy. Fork, attack, price the risk.",
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
+  },
+  "packageManager": "pnpm@9.12.0",
+  "engines": {
+    "node": ">=20"
+  }
+}
