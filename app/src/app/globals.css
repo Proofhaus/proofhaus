@@ -218,3 +218,64 @@ a { color: var(--green); }
 .err { color: var(--red); margin-top: 16px; }
 .tag { color: var(--dim); font-size: 12px; margin-top: 30px; letter-spacing: 0.04em; }
 .tag b { color: var(--green); font-weight: 600; }
+
+/* report cards */
+.cards {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+@media (max-width: 620px) { .cards { grid-template-columns: 1fr; } }
+.card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 14px 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent);
+  animation: rise 0.3s ease both;
+}
+.card .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.card .cname { color: var(--fg); font-size: 13.5px; letter-spacing: 0.02em; }
+.card .camt { font-variant-numeric: tabular-nums; font-size: 18px; }
+.card .cnote { color: var(--dim); font-size: 12px; margin-top: 8px; line-height: 1.45; }
+.card.hit { border-color: rgba(255, 93, 93, 0.25); }
+.card.hit .camt { color: var(--red); }
+.card.safe { border-color: rgba(47, 245, 160, 0.22); }
+.card.safe .camt { color: var(--green); }
+
+.sev {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+.sev.critical { color: #2a0808; background: var(--red); }
+.sev.high { color: #2a1c04; background: var(--amber); }
+.sev.medium { color: var(--amber); border: 1px solid var(--amber); }
+.sev.safe { color: #041b12; background: var(--green); }
+
+/* hardening history */
+.history {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.history .htitle {
+  color: var(--dim);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.hrow { display: flex; align-items: flex-end; gap: 14px; height: 76px; }
+.hbar { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 56px; }
+.hbar .bar {
+  width: 22px;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.4s ease;
+}
+.hbar .bar.hit { background: linear-gradient(180deg, var(--red), rgba(255, 93, 93, 0.3)); }
+.hbar .bar.safe { background: linear-gradient(180deg, var(--green), rgba(47, 245, 160, 0.3)); }
+.hbar .hlabel { color: var(--dim); font-size: 10px; letter-spacing: 0.08em; }
+.hbar .hval { color: var(--faint); font-size: 10px; font-variant-numeric: tabular-nums; }
