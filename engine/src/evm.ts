@@ -23,10 +23,12 @@ export async function send(
   sourceFile: string,
   name: string,
   fn: string,
-  args: unknown[]
+  args: unknown[],
+  value?: bigint
 ): Promise<void> {
   const { abi } = loadArtifact(sourceFile, name);
-  const hash = await w.writeContract({ address, abi, functionName: fn, args } as never);
+  const params = value !== undefined ? { address, abi, functionName: fn, args, value } : { address, abi, functionName: fn, args };
+  const hash = await w.writeContract(params as never);
   await w.waitForTransactionReceipt({ hash });
 }
 
