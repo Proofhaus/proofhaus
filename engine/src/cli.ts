@@ -3,6 +3,7 @@ import { scan } from "./orchestrator";
 import { priceCover } from "./pricing";
 import { loadManifest } from "./target";
 import { loadArtifactAt } from "./artifacts";
+import { detectKind } from "./detect";
 import type { ChainName, TargetInput } from "./types";
 
 interface Args {
@@ -40,7 +41,10 @@ async function main() {
   let target: TargetInput | undefined;
   if (args.target) {
     const m = loadManifest(args.target);
-    target = { kind: m.kind, artifact: loadArtifactAt(m.artifact) };
+    const artifact = loadArtifactAt(m.artifact);
+    const kind = m.kind ?? detectKind(artifact.abi);
+    if (!kind) throw new Error("no supported target shape detected in the artifact");
+    target = { kind, artifact };
   }
 
   const report = await scan({
