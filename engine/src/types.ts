@@ -2,7 +2,6 @@ import type { ForkRunner } from "./fork";
 
 export type ChainName = "tempo" | "base" | "robinhood";
 
-// result of running one attack module against a target
 export interface ModuleResult {
   name: string;
   success: boolean;
@@ -10,7 +9,6 @@ export interface ModuleResult {
   note?: string;
 }
 
-// the artifact the CLI, badge, dashboard, and attestation all consume
 export interface ScanReport {
   target: string;
   chain: ChainName;
@@ -20,8 +18,11 @@ export interface ScanReport {
   modules: ModuleResult[];
 }
 
-// every module in modules/ implements this; it gets a live fork to work against
+export interface RunOptions {
+  hardened?: boolean; // run against the hardened target twin
+}
+
 export interface AttackModule {
   name: string;
-  run(fork: ForkRunner): Promise<ModuleResult>;
+  run(fork: ForkRunner, opts?: RunOptions): Promise<ModuleResult>;
 }

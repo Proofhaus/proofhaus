@@ -7,16 +7,18 @@ interface Args {
   chain: ChainName;
   max: number;
   json: boolean;
+  hardened: boolean;
   port?: number;
 }
 
 function parseArgs(argv: string[]): Args {
-  const args: Args = { chain: "tempo", max: 0, json: false };
+  const args: Args = { chain: "tempo", max: 0, json: false, hardened: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--chain") args.chain = argv[++i] as ChainName;
     else if (a === "--max") args.max = Number(argv[++i]);
     else if (a === "--json") args.json = true;
+    else if (a === "--hardened") args.hardened = true;
     else if (a === "--port") args.port = Number(argv[++i]);
   }
   return args;
@@ -31,7 +33,11 @@ async function main() {
   const rest = argv[0] === "scan" ? argv.slice(1) : argv;
   const args = parseArgs(rest);
 
-  const report = await scan({ chain: args.chain, fork: args.port ? { port: args.port } : undefined });
+  const report = await scan({
+    chain: args.chain,
+    hardened: args.hardened,
+    fork: args.port ? { port: args.port } : undefined
+  });
   const quote = priceCover(report);
 
   if (args.json) {

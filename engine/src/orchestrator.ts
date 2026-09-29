@@ -16,15 +16,15 @@ export const allModules: AttackModule[] = [
 export interface ScanOptions {
   chain?: ChainName;
   commit?: string;
+  hardened?: boolean;
   modules?: AttackModule[];
   fork?: ForkOptions;
 }
 
-// run every module against one fork, isolating each with snapshot/revert, and
-// assemble the report. a module that throws is recorded as a failed result.
 export async function scan(opts: ScanOptions = {}): Promise<ScanReport> {
   const modules = opts.modules ?? allModules;
   const chain = opts.chain ?? "tempo";
+  const hardened = opts.hardened ?? false;
   const fork = new ForkRunner(opts.fork);
   const start = Date.now();
   const results: ModuleResult[] = [];
@@ -34,7 +34,7 @@ export async function scan(opts: ScanOptions = {}): Promise<ScanReport> {
     for (const m of modules) {
       const snap = await fork.snapshot();
       try {
-        results.push(await m.run(fork));
+        results.push(await m.run(fork, { hardened }));
       } catch (err) {
         results.push({
           name: m.name,
@@ -51,7 +51,7 @@ export async function scan(opts: ScanOptions = {}): Promise<ScanReport> {
   }
 
   return {
-    target: "sample-suite",
+    target: hardened ? "sample-suite-hardened" : "sample-suite",
     chain,
     commit: opts.commit,
     totalExtractedUsd: sumExtraction(results),
