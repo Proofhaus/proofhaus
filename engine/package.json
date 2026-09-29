@@ -7,6 +7,7 @@
     "build": "tsc --noEmit",
     "test": "vitest run",
     "lint": "tsc --noEmit",
+    "scan": "tsx src/cli.ts",
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
