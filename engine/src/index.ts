@@ -15,5 +15,6 @@ export {
   usdToCents,
   commitToBytes32
 } from "./attest";
+export { badgeEndpoint, badgeSvg, type ShieldsEndpoint } from "./badge";
 
 export const version = "0.0.0";
