@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ScanResponse, ModuleResult } from "../lib/types";
 import { usd, usd0 } from "../lib/format";
+import { CoverMarket } from "./CoverMarket";
 
 type Mode = "vulnerable" | "hardened";
 type Phase = "idle" | "running" | "streaming" | "done" | "error";
@@ -54,6 +55,7 @@ export function Terminal() {
   const [shown, setShown] = useState<ModuleResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<Run[]>([]);
+  const [scanId, setScanId] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
@@ -85,6 +87,7 @@ export function Terminal() {
 
   const run = useCallback(async () => {
     clearTimers();
+    setScanId((n) => n + 1);
     setPhase("running");
     setData(null);
     setShown([]);
@@ -226,6 +229,13 @@ export function Terminal() {
                 );
               })}
             </div>
+
+            <CoverMarket
+              key={scanId}
+              coverageUsd={total}
+              premiumUsd={data.quote.annualPremiumUsd}
+              riskMultiplier={data.quote.riskMultiplier}
+            />
           </>
         )}
 
