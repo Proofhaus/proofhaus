@@ -41,8 +41,11 @@ async function main() {
   const quote = priceCover(report);
 
   if (args.json) {
-    console.log(JSON.stringify({ report, quote }, null, 2));
-  } else {
+    console.log(JSON.stringify({ report, quote }));
+    return;
+  }
+
+  {
     console.log(`\nProofhaus scan  chain=${report.chain}  (${report.durationSec}s)`);
     console.log("-".repeat(56));
     for (const m of report.modules) {
