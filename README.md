@@ -59,6 +59,25 @@ pnpm -C engine scan -- --hardened --max 0   # exits zero: hardened is clean
 pnpm -C app dev                        # http://localhost:3000
 ```
 
+## Bring your own target
+
+Point Proofhaus at a contract it does not ship. Compile it, then describe it in a
+`proofhaus.target.json`:
+
+```json
+{ "kind": "erc4626", "artifact": "contracts/out/MyVault.sol/MyVault.json" }
+```
+
+`kind` is `amm`, `erc4626`, or `bank`. Then:
+
+```bash
+pnpm -C engine scan -- --target proofhaus.target.json --max 0
+```
+
+The target must expose the standard shape for its kind: an AMM needs `swap` and
+`getReserves`, an ERC4626 vault needs `deposit`, `redeem`, and `convertToShares`.
+Proofhaus deploys it in the sandbox, runs the matching attacks, and prices cover.
+
 ## CI gate
 
 `.github/workflows/ci.yml` builds contracts, runs both test suites, and proves the
@@ -85,9 +104,10 @@ forge script script/Deploy.s.sol:Deploy --rpc-url tempo --broadcast --private-ke
 
 Real and working: the fork-and-attack engine, four attack classes producing real
 extraction figures, the pricing model, the on-chain Attestation and CoverPool, the
-CLI gate, the CI pipeline, and the dashboard. The engine runs against representative
-built-in targets.
+CLI gate, the CI pipeline, and the dashboard. The engine runs against its built-in
+targets and against bring-your-own AMMs and ERC4626 vaults that implement the
+standard interfaces (see above).
 
-Next: generalized target intake, pointing Proofhaus at your own compiled artifact or
-a deployed address and matching the attack library to it. The hard part, turning an
-exploit into a priced number, already works.
+Next: intake for already-deployed contracts via fork mode, and for non-standard
+contract shapes. The hard part, turning an exploit into a priced number, already
+works.
