@@ -8,5 +8,6 @@ export { oracleModule } from "./modules/oracle";
 export { shareInflationModule } from "./modules/shareInflation";
 export { reentrancyModule } from "./modules/reentrancy";
 export { scan, allModules, type ScanOptions } from "./orchestrator";
+export { priceCover, riskMultiplier, DEFAULT_PRICING, type PricingParams, type PremiumQuote } from "./pricing";
 
 export const version = "0.0.0";
