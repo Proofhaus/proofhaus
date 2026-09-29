@@ -1,0 +1,54 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  proofhaus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build contracts
+        working-directory: contracts
+        run: forge build
+
+      - name: Contract tests
+        working-directory: contracts
+        run: forge test
+
+      - name: Engine typecheck
+        run: pnpm -C engine build
+
+      - name: Engine tests
+        run: pnpm -C engine test
+
+      # the gate must flag the deliberately vulnerable sample suite
+      - name: Gate catches the vulnerable sample
+        run: |
+          if pnpm -C engine scan -- --max 0 --port 8620; then
+            echo "expected the vulnerable suite to be flagged"; exit 1
+          fi
+
+      # and must pass once the sample is hardened
+      - name: Gate passes on the hardened sample
+        run: pnpm -C engine scan -- --hardened --max 0 --port 8621
