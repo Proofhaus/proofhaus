@@ -1,7 +1,8 @@
 export * from "./types";
 export { sumExtraction } from "./report";
 export { ForkRunner, type ForkOptions } from "./fork";
-export { loadArtifact, type Artifact } from "./artifacts";
+export { loadArtifact, loadArtifactAt, type Artifact } from "./artifacts";
+export { loadManifest, type TargetManifest, type TargetKind } from "./target";
 export { deploy, send, read, toUsd, type Wallet } from "./evm";
 export { sandwichModule } from "./modules/sandwich";
 export { oracleModule } from "./modules/oracle";
