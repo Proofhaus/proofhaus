@@ -1,4 +1,6 @@
 import type { ForkRunner } from "./fork";
+import type { Artifact } from "./artifacts";
+import type { TargetKind } from "./target";
 
 export type ChainName = "tempo" | "base" | "robinhood";
 
@@ -18,8 +20,14 @@ export interface ScanReport {
   modules: ModuleResult[];
 }
 
+export interface TargetInput {
+  kind: TargetKind;
+  artifact: Artifact;
+}
+
 export interface RunOptions {
-  hardened?: boolean; // run against the hardened target twin
+  hardened?: boolean;
+  target?: TargetInput;
 }
 
 export interface AttackModule {

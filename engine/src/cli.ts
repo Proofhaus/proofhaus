@@ -1,13 +1,16 @@
 #!/usr/bin/env tsx
 import { scan } from "./orchestrator";
 import { priceCover } from "./pricing";
-import type { ChainName } from "./types";
+import { loadManifest } from "./target";
+import { loadArtifactAt } from "./artifacts";
+import type { ChainName, TargetInput } from "./types";
 
 interface Args {
   chain: ChainName;
   max: number;
   json: boolean;
   hardened: boolean;
+  target?: string;
   port?: number;
 }
 
@@ -19,6 +22,7 @@ function parseArgs(argv: string[]): Args {
     else if (a === "--max") args.max = Number(argv[++i]);
     else if (a === "--json") args.json = true;
     else if (a === "--hardened") args.hardened = true;
+    else if (a === "--target") args.target = argv[++i];
     else if (a === "--port") args.port = Number(argv[++i]);
   }
   return args;
@@ -33,9 +37,16 @@ async function main() {
   const rest = argv[0] === "scan" ? argv.slice(1) : argv;
   const args = parseArgs(rest);
 
+  let target: TargetInput | undefined;
+  if (args.target) {
+    const m = loadManifest(args.target);
+    target = { kind: m.kind, artifact: loadArtifactAt(m.artifact) };
+  }
+
   const report = await scan({
     chain: args.chain,
     hardened: args.hardened,
+    target,
     fork: args.port ? { port: args.port } : undefined
   });
   const quote = priceCover(report);
