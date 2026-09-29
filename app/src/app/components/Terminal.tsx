@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { ScanResponse, ModuleResult } from "../lib/types";
 import { usd, usd0 } from "../lib/format";
 import { CoverMarket } from "./CoverMarket";
 
-type Mode = "vulnerable" | "hardened";
+type Mode = "vulnerable" | "hardened" | "byo";
 type Phase = "idle" | "running" | "streaming" | "done" | "error";
 interface Run {
   mode: Mode;
@@ -56,6 +56,7 @@ export function Terminal() {
   const [error, setError] = useState<string | null>(null);
   const [history, setHistory] = useState<Run[]>([]);
   const [scanId, setScanId] = useState(0);
+  const [artifactText, setArtifactText] = useState("");
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export function Terminal() {
       const raw = localStorage.getItem(HISTORY_KEY);
       if (raw) setHistory(JSON.parse(raw));
     } catch {
-      // storage unavailable; history stays in-memory only
+      // storage unavailable
     }
   }, []);
 
@@ -85,6 +86,12 @@ export function Terminal() {
   };
   useEffect(() => () => clearTimers(), []);
 
+  const onFile = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    file.text().then(setArtifactText);
+  };
+
   const run = useCallback(async () => {
     clearTimers();
     setScanId((n) => n + 1);
@@ -93,9 +100,25 @@ export function Terminal() {
     setShown([]);
     setError(null);
     try {
-      const res = await fetch(`/api/scan?mode=${mode}`, { cache: "no-store" });
+      let res: Response;
+      if (mode === "byo") {
+        let artifact: unknown;
+        try {
+          artifact = JSON.parse(artifactText);
+        } catch {
+          throw new Error("artifact is not valid json");
+        }
+        res = await fetch("/api/scan", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ artifact }),
+          cache: "no-store"
+        });
+      } else {
+        res = await fetch(`/api/scan?mode=${mode}`, { cache: "no-store" });
+      }
       const json = (await res.json()) as ScanResponse & { error?: string };
-      if (json.error || !json.report) throw new Error(json.error ?? "scan failed");
+      if (!res.ok || json.error || !json.report) throw new Error(json.error ?? "scan failed");
 
       setData(json);
       setPhase("streaming");
@@ -105,12 +128,7 @@ export function Terminal() {
           if (i === json.report.modules.length - 1) {
             const done = setTimeout(() => {
               setPhase("done");
-              pushRun({
-                mode,
-                total: json.report.totalExtractedUsd,
-                premium: json.quote.annualPremiumUsd,
-                at: Date.now()
-              });
+              pushRun({ mode, total: json.report.totalExtractedUsd, premium: json.quote.annualPremiumUsd, at: Date.now() });
             }, 420);
             timers.current.push(done);
           }
@@ -121,13 +139,15 @@ export function Terminal() {
       setError((e as Error).message);
       setPhase("error");
     }
-  }, [mode, pushRun]);
+  }, [mode, artifactText, pushRun]);
 
   const total = data?.report.totalExtractedUsd ?? 0;
   const counting = phase === "done";
   const animated = useCountUp(total, counting);
   const busy = phase === "running" || phase === "streaming";
   const hMax = Math.max(1, ...history.map((h) => h.total));
+  const cmd = mode === "byo" ? "proofhaus scan --target contract.json" : `proofhaus scan --mode ${mode}`;
+  const runDisabled = busy || (mode === "byo" && artifactText.trim() === "");
 
   return (
     <div className="wrap">
@@ -140,11 +160,11 @@ export function Terminal() {
 
       <div className="screen">
         <div className="prompt">
-          <span className="user">proofhaus@{mode === "hardened" ? "hardened" : "tempo"}</span>
+          <span className="user">proofhaus@{mode === "hardened" ? "hardened" : mode === "byo" ? "byo" : "tempo"}</span>
           <span>:</span>
           <span className="path">~/protocol</span>
           <span>$ </span>
-          <span className="cmd">proofhaus scan --mode {mode}</span>
+          <span className="cmd">{cmd}</span>
         </div>
 
         <div className="controls">
@@ -155,17 +175,39 @@ export function Terminal() {
             <button data-on={mode === "hardened"} onClick={() => !busy && setMode("hardened")} disabled={busy}>
               HARDENED
             </button>
+            <button data-on={mode === "byo"} onClick={() => !busy && setMode("byo")} disabled={busy}>
+              YOUR CONTRACT
+            </button>
           </div>
-          <button className="run" onClick={run} disabled={busy}>
+          <button className="run" onClick={run} disabled={runDisabled}>
             {busy ? "SCANNING…" : "RUN SCAN"}
           </button>
         </div>
+
+        {mode === "byo" && phase !== "done" && (
+          <div className="byo">
+            <textarea
+              value={artifactText}
+              onChange={(e) => setArtifactText(e.target.value)}
+              placeholder='paste a compiled artifact json here  { "abi": [...], "bytecode": { "object": "0x..." } }'
+              spellCheck={false}
+              disabled={busy}
+            />
+            <div className="file">
+              <input type="file" accept=".json,application/json" onChange={onFile} disabled={busy} />
+            </div>
+            <div className="hint">
+              a Foundry artifact from <code>out/&lt;File&gt;.sol/&lt;Name&gt;.json</code>. proofhaus detects the shape
+              (amm, erc4626, bank) and runs the matching attacks.
+            </div>
+          </div>
+        )}
 
         {phase !== "done" && (
           <div className="out">
             {phase === "running" && (
               <div className="ln">
-                <span className="sys">forking chain, deploying targets…</span>
+                <span className="sys">forking chain, deploying target…</span>
               </div>
             )}
             {shown.map((m) => (
@@ -246,11 +288,12 @@ export function Terminal() {
               {history.map((h, i) => {
                 const hit = h.total > 0;
                 const height = hit ? Math.max(8, Math.round((h.total / hMax) * 64)) : 4;
+                const tag = h.mode === "hardened" ? "HARD" : h.mode === "byo" ? "BYO" : "VULN";
                 return (
                   <div className="hbar" key={h.at + "-" + i}>
                     <div className={`bar ${hit ? "hit" : "safe"}`} style={{ height }} />
                     <span className="hval">{h.total === 0 ? "$0" : usd0(h.total)}</span>
-                    <span className="hlabel">{h.mode === "hardened" ? "HARD" : "VULN"}</span>
+                    <span className="hlabel">{tag}</span>
                   </div>
                 );
               })}
