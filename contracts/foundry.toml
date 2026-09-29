@@ -19,3 +19,8 @@ line_length = 100
 tab_width = 4
 bracket_spacing = false
 int_types = "long"
+
+[rpc_endpoints]
+tempo = "${TEMPO_RPC_URL}"
+base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
+robinhood = "${ROBINHOOD_RPC_URL}"
