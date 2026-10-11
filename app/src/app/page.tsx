@@ -3,6 +3,7 @@ import "./landing.css";
 import { HeroTerminal } from "./components/HeroTerminal";
 import { Logo } from "./components/Logo";
 import { OnchainState } from "./components/OnchainState";
+import { ScanFlow } from "./components/ScanFlow";
 
 const REPO = "https://github.com/Proofhaus/proofhaus";
 
@@ -101,6 +102,7 @@ EXTRACTABLE                   $359,727.44`}</pre>
           <div className="lp-wrap">
             <p className="lp-label"><b>02</b> / how it works</p>
             <h2 className="lp-h2">Fork it. Attack it. Measure it. Price it.</h2>
+            <ScanFlow />
             <div className="lp-steps">
               <div>
                 <span className="lp-n">01</span>
@@ -120,7 +122,7 @@ EXTRACTABLE                   $359,727.44`}</pre>
               <div>
                 <span className="lp-n">04</span>
                 <h3>Price</h3>
-                <p>Feeds the number into a premium model and records it onchain for the cover market.</p>
+                <p>Feeds the number into a premium model, ready to record in an Attestation contract for the cover market.</p>
               </div>
             </div>
           </div>
