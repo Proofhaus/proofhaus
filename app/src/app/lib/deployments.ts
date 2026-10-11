@@ -12,9 +12,9 @@ const ZERO = "0x0000000000000000000000000000000000000000" as const;
 // fill these in from the `forge script Deploy` output on each testnet
 export const deployments: Record<string, Deployment> = {
   tempo: {
-    label: "Tempo testnet",
-    chainId: 0,
-    rpcUrl: process.env.NEXT_PUBLIC_TEMPO_RPC ?? "",
+    label: "Tempo testnet (Moderato)",
+    chainId: 42431,
+    rpcUrl: process.env.NEXT_PUBLIC_TEMPO_RPC ?? "https://rpc.moderato.tempo.xyz",
     currency: ZERO,
     attestation: ZERO,
     coverPool: ZERO
@@ -28,9 +28,9 @@ export const deployments: Record<string, Deployment> = {
     coverPool: ZERO
   },
   robinhood: {
-    label: "Robinhood testnet",
-    chainId: 0,
-    rpcUrl: process.env.NEXT_PUBLIC_ROBINHOOD_RPC ?? "",
+    label: "Robinhood Chain testnet",
+    chainId: 46630,
+    rpcUrl: process.env.NEXT_PUBLIC_ROBINHOOD_RPC ?? "https://rpc.testnet.chain.robinhood.com",
     currency: ZERO,
     attestation: ZERO,
     coverPool: ZERO
