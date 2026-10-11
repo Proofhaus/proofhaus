@@ -21,6 +21,11 @@ describe("detectKind", () => {
     expect(detectKind(a.abi)).toBe("bank");
   });
 
+  it("classifies a bank we do not ship as bank", () => {
+    const a = loadArtifactAt(join(OUT, "DemoBank.sol", "DemoBank.json"));
+    expect(detectKind(a.abi)).toBe("bank");
+  });
+
   it("returns null for an unknown shape", () => {
     const a = loadArtifactAt(join(OUT, "MockERC20.sol", "MockERC20.json"));
     expect(detectKind(a.abi)).toBeNull();

@@ -22,7 +22,7 @@ const KIND_MODULES: Record<TargetKind, AttackModule[]> = {
 };
 
 // bring-your-own kinds wired so far
-const SUPPORTED_BYO: TargetKind[] = ["erc4626", "amm"];
+const SUPPORTED_BYO: TargetKind[] = ["erc4626", "amm", "bank"];
 
 export interface ScanOptions {
   chain?: ChainName;

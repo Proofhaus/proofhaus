@@ -60,7 +60,7 @@ export default function Landing() {
           <div className="lp-stats">
             <div><b>4</b><span>attack classes</span></div>
             <div><b>~1s</b><span>per full scan</span></div>
-            <div><b>38</b><span>passing tests</span></div>
+            <div><b>40</b><span>passing tests</span></div>
             <div><b>3</b><span>EVM chains targeted</span></div>
           </div>
         </section>
@@ -242,6 +242,11 @@ exit 0`}</pre>
                 <span>ERC4626 vault</span>
                 <span className="dim">deposit, redeem</span>
                 <span>share inflation</span>
+              </div>
+              <div className="lp-tr" role="row">
+                <span>ETH bank</span>
+                <span className="dim">deposit, withdraw</span>
+                <span>reentrancy</span>
               </div>
             </div>
             <p className="lp-fine">

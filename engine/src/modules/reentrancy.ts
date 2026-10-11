@@ -1,7 +1,8 @@
 import { parseEther, formatEther } from "viem";
 import type { AttackModule, ModuleResult, RunOptions } from "../types";
 import type { ForkRunner } from "../fork";
-import { deploy, send } from "../evm";
+import { deploy, deployArtifact, send, sendAbi } from "../evm";
+import { loadArtifact, type Artifact } from "../artifacts";
 
 const RE = "ReentrancyAttack.sol";
 const REN = "ReentrancyAttack";
@@ -11,17 +12,19 @@ export const reentrancyModule: AttackModule = {
   name: "reentrancy",
   async run(fork: ForkRunner, opts?: RunOptions): Promise<ModuleResult> {
     const hardened = opts?.hardened ?? false;
-    const BANK = hardened ? "HardenedBank.sol" : "ReentrantBank.sol";
-    const BANKN = hardened ? "HardenedBank" : "ReentrantBank";
+    const byo = opts?.target?.kind === "bank" ? opts.target.artifact : undefined;
+    const bankArtifact: Artifact =
+      byo ??
+      loadArtifact(hardened ? "HardenedBank.sol" : "ReentrantBank.sol", hardened ? "HardenedBank" : "ReentrantBank");
 
     const deployer = fork.wallet(0);
     const attacker = fork.wallet(1);
     const victim = fork.wallet(2);
 
-    const bank = await deploy(deployer, BANK, BANKN, []);
+    const bank = await deployArtifact(deployer, bankArtifact, []);
     const atk = await deploy(attacker, RE, REN, [bank]);
 
-    await send(victim, bank, BANK, BANKN, "deposit", [], parseEther("100"));
+    await sendAbi(victim, bank, bankArtifact.abi, "deposit", [], parseEther("100"));
     const bankBefore = await fork.publicClient.getBalance({ address: bank });
 
     try {
@@ -33,7 +36,9 @@ export const reentrancyModule: AttackModule = {
         name: "reentrancy",
         success: drained > 0n,
         extractedUsd: usd,
-        note: "reentered withdraw before the balance update, drained pooled deposits"
+        note: byo
+          ? "reentered withdraw on the provided bank before its balance update"
+          : "reentered withdraw before the balance update, drained pooled deposits"
       };
     } catch {
       return { name: "reentrancy", success: false, extractedUsd: 0, note: "blocked by target protection" };

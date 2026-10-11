@@ -26,4 +26,15 @@ describe("bring-your-own targets", () => {
     for (const m of report.modules) expect(m.success).toBe(true);
     expect(report.totalExtractedUsd).toBeGreaterThan(0);
   }, 60_000);
+
+  it("attacks a non-sample bank with reentrancy", async () => {
+    const artifact = loadArtifactAt(join(OUT, "DemoBank.sol", "DemoBank.json"));
+    const report = await scan({ target: { kind: "bank", artifact }, fork: { port: 8634, accounts: 3 } });
+
+    expect(report.target).toBe("byo:bank");
+    expect(report.modules).toHaveLength(1);
+    expect(report.modules[0].name).toBe("reentrancy");
+    expect(report.modules[0].success).toBe(true);
+    expect(report.totalExtractedUsd).toBeGreaterThan(0);
+  }, 60_000);
 });
