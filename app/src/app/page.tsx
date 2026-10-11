@@ -103,28 +103,6 @@ EXTRACTABLE                   $359,727.44`}</pre>
             <p className="lp-label"><b>02</b> / how it works</p>
             <h2 className="lp-h2">Fork it. Attack it. Measure it. Price it.</h2>
             <ScanFlow />
-            <div className="lp-steps">
-              <div>
-                <span className="lp-n">01</span>
-                <h3>Fork</h3>
-                <p>Boots an anvil fork and snapshots state, so every attack starts from a clean chain.</p>
-              </div>
-              <div>
-                <span className="lp-n">02</span>
-                <h3>Attack</h3>
-                <p>Runs sandwich, oracle manipulation, share inflation and reentrancy against the target.</p>
-              </div>
-              <div>
-                <span className="lp-n">03</span>
-                <h3>Measure</h3>
-                <p>Reads the attacker&apos;s balance change. That is the extraction in dollars, not an estimate.</p>
-              </div>
-              <div>
-                <span className="lp-n">04</span>
-                <h3>Price</h3>
-                <p>Feeds the number into a premium model, ready to record in an Attestation contract for the cover market.</p>
-              </div>
-            </div>
           </div>
         </section>
 
