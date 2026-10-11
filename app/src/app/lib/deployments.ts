@@ -41,3 +41,7 @@ export const deployments: Record<string, Deployment> = {
 };
 
 export const isDeployed = (d: Deployment): boolean => d.coverPool !== ZERO;
+
+// label address the seed script attested for the built-in vulnerable sample suite.
+// the sample runs in the sandbox, so this address has no contract of its own.
+export const SAMPLE_TARGET = "0x831e6CFEE477113E9A8CbB76c177FDd46FD327f4" as const;

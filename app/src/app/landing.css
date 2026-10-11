@@ -238,3 +238,7 @@ html { scroll-behavior: smooth; }
   .fnode { animation: none; border-color: var(--lit); }
   .flink .fill { animation: none; transform: none; opacity: 1; }
 }
+.attest { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.attest .mk { color: var(--dim); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
+.arow { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 10px; color: var(--dim); font-size: 14px; }
+.arow b { color: var(--fg); font-weight: 500; font-variant-numeric: tabular-nums; margin-left: 4px; }
