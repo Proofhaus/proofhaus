@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { ScanResponse, ModuleResult } from "../lib/types";
 import { usd, usd0 } from "../lib/format";
+import Link from "next/link";
 import { CoverMarket } from "./CoverMarket";
 
 type Mode = "vulnerable" | "hardened" | "byo";
@@ -155,7 +156,8 @@ export function Terminal() {
         <span className="dot r" />
         <span className="dot y" />
         <span className="dot g" />
-        <span className="title">proofhaus — economic security you run on every deploy</span>
+        <span className="title">proofhaus: economic security you run on every deploy</span>
+        <Link href="/" className="chrome-link">home</Link>
       </div>
 
       <div className="screen">

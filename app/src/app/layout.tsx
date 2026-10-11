@@ -4,8 +4,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Proofhaus",
-  description: "Economic security you run on every deploy"
+  title: "Proofhaus: economic security you run on every deploy",
+  description: "Fork your protocol, attack it, and get the dollars an attacker could extract. A deploy gate that also prices onchain cover."
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
