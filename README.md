@@ -139,6 +139,12 @@ forge script script/Deploy.s.sol:Deploy --rpc-url tempo --broadcast --private-ke
 | Tempo Moderato testnet (42431) | Attestation | [`0xfa820CB11e871eB05334d0f9567F7804c68CdB98`](https://explore.testnet.tempo.xyz/address/0xfa820CB11e871eB05334d0f9567F7804c68CdB98) |
 | Tempo Moderato testnet (42431) | CoverPool | [`0xa46c8271C5344a21932ebea331DD8086189986DF`](https://explore.testnet.tempo.xyz/address/0xa46c8271C5344a21932ebea331DD8086189986DF) |
 | Tempo Moderato testnet (42431) | phUSD (settlement token) | [`0x3D30B84664E33CE51015a6B310544F45d63aA5D3`](https://explore.testnet.tempo.xyz/address/0x3D30B84664E33CE51015a6B310544F45d63aA5D3) |
+| Base Sepolia (84532) | Attestation | [`0xa46c8271C5344a21932ebea331DD8086189986DF`](https://sepolia.basescan.org/address/0xa46c8271C5344a21932ebea331DD8086189986DF) |
+| Base Sepolia (84532) | CoverPool | [`0x1Dde2ad21ecf074B3539788C80D6F5caE3F23869`](https://sepolia.basescan.org/address/0x1Dde2ad21ecf074B3539788C80D6F5caE3F23869) |
+| Base Sepolia (84532) | phUSD (settlement token) | [`0xfa820CB11e871eB05334d0f9567F7804c68CdB98`](https://sepolia.basescan.org/address/0xfa820CB11e871eB05334d0f9567F7804c68CdB98) |
+| Robinhood Chain testnet (46630) | Attestation | [`0x8DAf1d94dB0A8e29d487cb8c458178eF080960fA`](https://explorer.testnet.chain.robinhood.com/address/0x8DAf1d94dB0A8e29d487cb8c458178eF080960fA) |
+| Robinhood Chain testnet (46630) | CoverPool | [`0x31E3F15ec535Ab2ea8E2475E8939b2B7c4775d01`](https://explorer.testnet.chain.robinhood.com/address/0x31E3F15ec535Ab2ea8E2475E8939b2B7c4775d01) |
+| Robinhood Chain testnet (46630) | phUSD (settlement token) | [`0x2c12788fA1187fb46097A8BCA84d9DDa7f98f5e1`](https://explorer.testnet.chain.robinhood.com/address/0x2c12788fA1187fb46097A8BCA84d9DDa7f98f5e1) |
 
 ## What is real today, and what is next
 
