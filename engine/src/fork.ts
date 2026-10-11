@@ -64,7 +64,7 @@ export class ForkRunner {
     ];
     if (this.opts.forkUrl) args.push("--fork-url", this.opts.forkUrl);
 
-    this.proc = execa("anvil", args, { stdout: "ignore", stderr: "ignore" });
+    this.proc = execa(process.env.PROOFHAUS_ANVIL ?? "anvil", args, { stdout: "ignore", stderr: "ignore" });
     this.publicClient = makePublic(this.rpcUrl);
     this.testClient = makeTest(this.rpcUrl);
 

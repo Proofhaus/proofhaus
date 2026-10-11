@@ -4,7 +4,8 @@ import { dirname, join, isAbsolute } from "node:path";
 import type { Abi, Hex } from "viem";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT_DIR = join(HERE, "..", "..", "contracts", "out");
+// overridable so a bundled engine (the hosted demo) can point at its own copy
+const OUT_DIR = process.env.PROOFHAUS_OUT_DIR ?? join(HERE, "..", "..", "contracts", "out");
 
 export interface Artifact {
   abi: Abi;
