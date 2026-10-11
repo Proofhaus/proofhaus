@@ -2,6 +2,7 @@ export interface Deployment {
   label: string;
   chainId: number;
   rpcUrl: string;
+  explorer: string;
   currency: `0x${string}`;
   attestation: `0x${string}`;
   coverPool: `0x${string}`;
@@ -9,11 +10,11 @@ export interface Deployment {
 
 const ZERO = "0x0000000000000000000000000000000000000000" as const;
 
-// fill these in from the `forge script Deploy` output on each testnet
 export const deployments: Record<string, Deployment> = {
   tempo: {
     label: "Tempo testnet (Moderato)",
     chainId: 42431,
+    explorer: "https://explore.testnet.tempo.xyz",
     rpcUrl: process.env.NEXT_PUBLIC_TEMPO_RPC ?? "https://rpc.moderato.tempo.xyz",
     currency: "0x3D30B84664E33CE51015a6B310544F45d63aA5D3",
     attestation: "0xfa820CB11e871eB05334d0f9567F7804c68CdB98",
@@ -22,6 +23,7 @@ export const deployments: Record<string, Deployment> = {
   base: {
     label: "Base Sepolia",
     chainId: 84532,
+    explorer: "https://sepolia.basescan.org",
     rpcUrl: process.env.NEXT_PUBLIC_BASE_RPC ?? "https://sepolia.base.org",
     currency: "0xfa820CB11e871eB05334d0f9567F7804c68CdB98",
     attestation: "0xa46c8271C5344a21932ebea331DD8086189986DF",
@@ -30,6 +32,7 @@ export const deployments: Record<string, Deployment> = {
   robinhood: {
     label: "Robinhood Chain testnet",
     chainId: 46630,
+    explorer: "https://explorer.testnet.chain.robinhood.com",
     rpcUrl: process.env.NEXT_PUBLIC_ROBINHOOD_RPC ?? "https://rpc.testnet.chain.robinhood.com",
     currency: "0x2c12788fA1187fb46097A8BCA84d9DDa7f98f5e1",
     attestation: "0x8DAf1d94dB0A8e29d487cb8c458178eF080960fA",

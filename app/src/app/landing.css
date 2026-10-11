@@ -186,3 +186,18 @@ html { scroll-behavior: smooth; }
 
 .lp-brand { line-height: 0; }
 .lp-foot-brand { display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+/* onchain state */
+.onchain { margin-top: 40px; border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+.onchain .htitle { color: var(--dim); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 14px; }
+.livetag { margin-left: 10px; color: var(--green); border: 1px solid var(--green-deep); border-radius: 5px; padding: 2px 8px; font-size: 12px; letter-spacing: 0.12em; }
+.onchain .seg { margin-bottom: 20px; flex-wrap: wrap; }
+.ogrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.ogrid .mk { color: var(--dim); font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; }
+.ogrid .mv { font-variant-numeric: tabular-nums; font-size: 24px; margin-top: 5px; }
+.addrs { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; font-size: 13.5px; }
+.addrs a { color: var(--dim); text-decoration: none; }
+.addrs a:hover { color: var(--green); }
+.addrs code { color: var(--fg); margin-left: 4px; }
+.chainid { color: var(--muted); font-size: 13px; margin-top: 10px; }
+@media (max-width: 620px) { .ogrid { grid-template-columns: minmax(0, 1fr); } .onchain { padding: 18px; } }

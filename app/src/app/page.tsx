@@ -2,6 +2,7 @@ import Link from "next/link";
 import "./landing.css";
 import { HeroTerminal } from "./components/HeroTerminal";
 import { Logo } from "./components/Logo";
+import { OnchainState } from "./components/OnchainState";
 
 const REPO = "https://github.com/Proofhaus/proofhaus";
 
@@ -208,15 +209,16 @@ exit 0`}</pre>
             <div className="lp-flow">
               <div><b>SCAN</b><span>the engine measures what an attacker could take</span></div>
               <i aria-hidden>→</i>
-              <div><b>ATTEST</b><span>the result and premium are written to an Attestation contract</span></div>
+              <div><b>ATTEST</b><span>the engine can write the result and premium to an Attestation contract</span></div>
               <i aria-hidden>→</i>
               <div><b>COVER</b><span>LPs fund a CoverPool, protocols buy a policy, a guardian triggers payout</span></div>
             </div>
             <p className="lp-fine">
               Attestation and CoverPool are written in Solidity with 16 Foundry tests and deployed to the
               Tempo, Base Sepolia and Robinhood Chain testnets. Payout is guardian-triggered in this
-              version.
+              version. The hosted scanner does not write attestations yet.
             </p>
+            <OnchainState />
           </div>
         </section>
 
