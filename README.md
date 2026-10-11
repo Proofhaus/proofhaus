@@ -61,22 +61,28 @@ pnpm -C app dev                        # http://localhost:3000
 
 ## Bring your own target
 
-Point Proofhaus at a contract it does not ship. Compile it, then describe it in a
-`proofhaus.target.json`:
+Point Proofhaus at a contract it does not ship. Compile it with Foundry, then either use the dashboard's
+YOUR CONTRACT tab (paste or upload the artifact json) or the CLI with a small manifest:
 
 ```json
-{ "kind": "erc4626", "artifact": "contracts/out/MyVault.sol/MyVault.json" }
+{ "artifact": "contracts/out/MyVault.sol/MyVault.json" }
 ```
-
-`kind` is `amm`, `erc4626`, or `bank`. Then:
 
 ```bash
 pnpm -C engine scan -- --target proofhaus.target.json --max 0
 ```
 
-The target must expose the standard shape for its kind: an AMM needs `swap` and
-`getReserves`, an ERC4626 vault needs `deposit`, `redeem`, and `convertToShares`.
-Proofhaus deploys it in the sandbox, runs the matching attacks, and prices cover.
+Proofhaus reads the ABI, detects the shape, deploys the contract into the sandbox, runs the matching attacks
+and prices cover. You can force a shape with `"kind": "amm" | "erc4626" | "bank"`, and if nothing matches it
+says so instead of guessing.
+
+| shape | detected by | constructor | attacks run |
+|-------|-------------|-------------|-------------|
+| AMM | `swap`, `getReserves` | `(token0, token1)` | sandwich, oracle manipulation |
+| ERC4626 vault | `deposit`, `redeem` | `(asset)` | share inflation |
+| ETH bank | `deposit()`, `withdraw()` | none | reentrancy |
+
+The artifact must be a Foundry artifact (`abi` plus `bytecode`). Each new attack class is one module.
 
 ## CI gate
 
@@ -90,6 +96,22 @@ budget:
 
 The engine also produces a shields-style badge (endpoint JSON and SVG) so a
 `$0 extractable` badge can be pinned to a README.
+
+## Dashboard
+
+```bash
+cd contracts && forge build        # the engine reads these artifacts
+pnpm -C app dev                    # http://localhost:3000
+```
+
+`/` is the landing page and `/try` is the scanner, with three modes: VULNERABLE and HARDENED run the built-in
+sample suite, and YOUR CONTRACT scans an artifact you drop in. The cover market panel is a local simulation of
+the pool economics; the onchain contracts are the Foundry-tested ones in `contracts/`.
+
+Live scans start anvil, so the scan route needs `pnpm` and `anvil` on the host. Where they are missing, as on a
+serverless deploy, the sample suite is served as a clearly labelled replay of a recorded engine run, and
+scanning your own contract asks you to run locally. Set `PROOFHAUS_REPLAY=1` to force replay mode, and
+`NEXT_PUBLIC_SITE_URL` to your public URL so link previews resolve.
 
 ## On-chain market
 
