@@ -15,9 +15,9 @@ export const deployments: Record<string, Deployment> = {
     label: "Tempo testnet (Moderato)",
     chainId: 42431,
     rpcUrl: process.env.NEXT_PUBLIC_TEMPO_RPC ?? "https://rpc.moderato.tempo.xyz",
-    currency: ZERO,
-    attestation: ZERO,
-    coverPool: ZERO
+    currency: "0x3D30B84664E33CE51015a6B310544F45d63aA5D3",
+    attestation: "0xfa820CB11e871eB05334d0f9567F7804c68CdB98",
+    coverPool: "0xa46c8271C5344a21932ebea331DD8086189986DF"
   },
   base: {
     label: "Base Sepolia",
