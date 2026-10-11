@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
 const engineDir = () => join(process.cwd(), "..", "engine");
 const port = () => 8700 + Math.floor(Math.random() * 250);
 
-const forceReplay = () => process.env.PROOFHAUS_REPLAY === "1";
+// vercel sets VERCEL=1 itself, and its functions cannot run anvil
+const forceReplay = () => process.env.PROOFHAUS_REPLAY === "1" || process.env.VERCEL === "1";
 // the host is missing pnpm or anvil, as on a serverless deploy
 const missingTooling = (msg: string) => /ENOENT|EACCES/.test(msg);
 

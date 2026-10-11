@@ -22,3 +22,6 @@ contracts/broadcast/
 .DS_Store
 *.log
 coverage/
+
+# vercel project link
+.vercel/
