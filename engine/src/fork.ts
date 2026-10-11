@@ -11,6 +11,9 @@ import {
 import { anvil as anvilChain } from "viem/chains";
 import { mnemonicToAccount } from "viem/accounts";
 
+// viem polls for receipts every 4s by default; newer anvil makes a first-check miss common
+const POLL_MS = 50;
+
 // anvil's default dev mnemonic, so derived accounts match the funded ones
 const ANVIL_MNEMONIC = "test test test test test test test test test test test junk";
 
@@ -22,11 +25,11 @@ export interface ForkOptions {
 }
 
 function makePublic(rpcUrl: string) {
-  return createPublicClient({ chain: anvilChain, transport: http(rpcUrl) });
+  return createPublicClient({ chain: anvilChain, transport: http(rpcUrl), pollingInterval: POLL_MS });
 }
 
 function makeTest(rpcUrl: string) {
-  return createTestClient({ chain: anvilChain, mode: "anvil", transport: http(rpcUrl) });
+  return createTestClient({ chain: anvilChain, mode: "anvil", transport: http(rpcUrl), pollingInterval: POLL_MS });
 }
 
 // boots an anvil instance and exposes snapshot/revert so each attack runs
@@ -88,7 +91,12 @@ export class ForkRunner {
   // wallet client for anvil account `index`, extended with read actions
   wallet(index: number) {
     const account = mnemonicToAccount(ANVIL_MNEMONIC, { addressIndex: index });
-    return createWalletClient({ account, chain: anvilChain, transport: http(this.rpcUrl) }).extend(
+    return createWalletClient({
+      account,
+      chain: anvilChain,
+      transport: http(this.rpcUrl),
+      pollingInterval: POLL_MS
+    }).extend(
       publicActions
     );
   }
