@@ -87,7 +87,7 @@ export function HeroTerminal() {
         <div className="lp-sum">
           <div>
             <div className="k">Extractable</div>
-            <div className={`lp-big ${vuln ? "" : "zero"}`}>{usd(total)}</div>
+            <div className={`lp-big ${total < 0.5 ? "zero" : ""}`}>{usd(total)}</div>
           </div>
           <div className="lp-sum-side">
             <div className="k">Annual premium</div>
