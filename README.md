@@ -124,9 +124,21 @@ scanning your own contract asks you to run locally. Set `PROOFHAUS_REPLAY=1` to 
 ```bash
 cd contracts
 cp .env.example .env    # PRIVATE_KEY + testnet RPC urls
-forge script script/Deploy.s.sol:Deploy --rpc-url tempo --broadcast --private-key $PRIVATE_KEY
-# repeat for base_sepolia and robinhood, then paste addresses into app/src/app/lib/deployments.ts
+set -a; source .env; set +a
+forge script script/Deploy.s.sol:Deploy --rpc-url base_sepolia --broadcast --private-key $PRIVATE_KEY
+forge script script/Deploy.s.sol:Deploy --rpc-url robinhood --broadcast --private-key $PRIVATE_KEY
+# tempo charges far more gas for contract creation than ethereum, so raise foundry's estimate
+forge script script/Deploy.s.sol:Deploy --rpc-url tempo --broadcast --private-key $PRIVATE_KEY --gas-estimate-multiplier 1500
+# then paste the printed addresses into app/src/app/lib/deployments.ts
 ```
+
+## Deployments
+
+| chain | contract | address |
+|-------|----------|---------|
+| Tempo Moderato testnet (42431) | Attestation | [`0xfa820CB11e871eB05334d0f9567F7804c68CdB98`](https://explore.testnet.tempo.xyz/address/0xfa820CB11e871eB05334d0f9567F7804c68CdB98) |
+| Tempo Moderato testnet (42431) | CoverPool | [`0xa46c8271C5344a21932ebea331DD8086189986DF`](https://explore.testnet.tempo.xyz/address/0xa46c8271C5344a21932ebea331DD8086189986DF) |
+| Tempo Moderato testnet (42431) | phUSD (settlement token) | [`0x3D30B84664E33CE51015a6B310544F45d63aA5D3`](https://explore.testnet.tempo.xyz/address/0x3D30B84664E33CE51015a6B310544F45d63aA5D3) |
 
 ## What is real today, and what is next
 
