@@ -62,7 +62,7 @@ export default function Landing() {
             <div><b>4</b><span>attack classes</span></div>
             <div><b>~1s</b><span>per full scan</span></div>
             <div><b>40</b><span>passing tests</span></div>
-            <div><b>3</b><span>EVM chains targeted</span></div>
+            <div><b>3</b><span>testnets deployed</span></div>
           </div>
         </section>
 
@@ -213,8 +213,9 @@ exit 0`}</pre>
               <div><b>COVER</b><span>LPs fund a CoverPool, protocols buy a policy, a guardian triggers payout</span></div>
             </div>
             <p className="lp-fine">
-              Attestation and CoverPool are written in Solidity with 16 Foundry tests. Payout is
-              guardian-triggered in this version.
+              Attestation and CoverPool are written in Solidity with 16 Foundry tests and deployed to the
+              Tempo, Base Sepolia and Robinhood Chain testnets. Payout is guardian-triggered in this
+              version.
             </p>
           </div>
         </section>

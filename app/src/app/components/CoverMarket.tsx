@@ -45,7 +45,8 @@ export function CoverMarket({ coverageUsd, premiumUsd, riskMultiplier }: Props) 
       </div>
       <p className="simnote">
         A local model of the pool economics, not onchain activity. The Attestation and CoverPool contracts are
-        tested in Foundry and settle onchain once deployed.
+        deployed on the Tempo, Base Sepolia and Robinhood Chain testnets (addresses in the README), and this panel
+        does not call them yet.
       </p>
       <div className="mgrid">
         <div className="mcol">
