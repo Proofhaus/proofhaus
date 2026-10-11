@@ -1,30 +1,64 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { spawn } from "node:child_process";
-import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { chmodSync, copyFileSync, existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { RECORDED } from "../../lib/recorded";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 60;
 
 const engineDir = () => join(process.cwd(), "..", "engine");
 const port = () => 8700 + Math.floor(Math.random() * 250);
 
-// vercel sets VERCEL=1 itself, and its functions cannot run anvil
-const forceReplay = () => process.env.PROOFHAUS_REPLAY === "1" || process.env.VERCEL === "1";
-// the host is missing pnpm or anvil, as on a serverless deploy
+// staged by scripts/prepare-hosted.mjs on vercel: a static anvil, artifacts and the bundled engine
+function hostedVendor(): string | null {
+  for (const dir of [join(process.cwd(), "vendor"), join(process.cwd(), "app", "vendor")]) {
+    if (existsSync(join(dir, "engine", "cli.mjs"))) return dir;
+  }
+  return null;
+}
+
+// the bundle may not keep its exec bit, so run anvil from a copy in /tmp
+function anvilPath(vendor: string): string {
+  const dest = join(tmpdir(), "proofhaus-anvil");
+  if (!existsSync(dest)) {
+    copyFileSync(join(vendor, "bin", "anvil"), dest);
+    chmodSync(dest, 0o755);
+  }
+  return dest;
+}
+
+const forceReplay = () => process.env.PROOFHAUS_REPLAY === "1";
+// the engine could not start at all (no pnpm, no anvil, no bundle)
 const missingTooling = (msg: string) => /ENOENT|EACCES/.test(msg);
 
 const LOCAL_ONLY =
-  "Scanning your own contract needs the local engine. Clone the repo and run pnpm -C app dev. The hosted demo replays the sample suite only.";
+  "Scanning your own contract needs the engine, which is not available on this host. Clone the repo and run pnpm -C app dev.";
+
+const NO_SHAPE =
+  "No supported contract shape detected. Proofhaus recognizes AMMs (swap, getReserves), ERC4626 vaults (deposit, redeem) and ETH banks (deposit, withdraw).";
+
+// keep stack traces out of the ui
+const firstLine = (msg: string) => msg.replace(/^Error:\s*/, "").split("\n")[0].slice(0, 240);
 
 type CliResult = { ok: true; data: unknown } | { ok: false; error: string };
 
 // run the engine cli as a subprocess so anvil/execa stay out of the next bundle
 function runCli(args: string[]): Promise<CliResult> {
   return new Promise((resolve) => {
-    const child = spawn("pnpm", ["exec", "tsx", "src/cli.ts", ...args], { cwd: engineDir() });
+    const vendor = hostedVendor();
+    const child = vendor
+      ? spawn(process.execPath, [join(vendor, "engine", "cli.mjs"), ...args], {
+          env: {
+            ...process.env,
+            HOME: tmpdir(),
+            PROOFHAUS_ANVIL: anvilPath(vendor),
+            PROOFHAUS_OUT_DIR: join(vendor, "artifacts")
+          }
+        })
+      : spawn("pnpm", ["exec", "tsx", "src/cli.ts", ...args], { cwd: engineDir() });
     let out = "";
     let err = "";
     child.stdout.on("data", (d) => (out += d.toString()));
@@ -56,7 +90,7 @@ export async function GET(req: NextRequest) {
   const r = await runCli(args);
   if (r.ok) return NextResponse.json(r.data);
   if (missingTooling(r.error)) return replay();
-  return NextResponse.json({ error: r.error }, { status: 500 });
+  return NextResponse.json({ error: firstLine(r.error) }, { status: 500 });
 }
 
 // scan a bring-your-own compiled artifact posted in the body
@@ -83,8 +117,10 @@ export async function POST(req: NextRequest) {
     const r = await runCli(["--target", manifestPath, "--json", "--port", String(port())]);
     if (!r.ok) {
       if (missingTooling(r.error)) return NextResponse.json({ error: LOCAL_ONLY, code: "local_only" }, { status: 501 });
-      const noShape = /no supported target shape/i.test(r.error);
-      return NextResponse.json({ error: r.error }, { status: noShape ? 422 : 500 });
+      if (/no supported target shape/i.test(r.error)) {
+        return NextResponse.json({ error: NO_SHAPE, code: "no_shape" }, { status: 422 });
+      }
+      return NextResponse.json({ error: firstLine(r.error) }, { status: 500 });
     }
     return NextResponse.json(r.data);
   } finally {

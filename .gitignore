@@ -25,3 +25,6 @@ coverage/
 
 # vercel project link
 .vercel/
+
+# generated at build time for the hosted scan
+app/vendor/
