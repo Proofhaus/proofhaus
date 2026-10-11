@@ -183,3 +183,6 @@ html { scroll-behavior: smooth; }
 @media (max-width: 520px) {
   .lp-card pre { font-size: 13px; padding: 18px 14px; }
 }
+
+.lp-brand { line-height: 0; }
+.lp-foot-brand { display: inline-flex; align-items: center; gap: 16px; flex-wrap: wrap; }

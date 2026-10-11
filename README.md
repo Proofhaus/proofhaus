@@ -1,4 +1,10 @@
-# Proofhaus
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/proofhaus-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="brand/proofhaus-logo-light.svg">
+    <img alt="proofhaus" src="brand/proofhaus-logo-light.svg" height="72">
+  </picture>
+</p>
 
 **Economic security you run on every deploy.**
 

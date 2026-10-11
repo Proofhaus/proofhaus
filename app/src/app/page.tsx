@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "./landing.css";
 import { HeroTerminal } from "./components/HeroTerminal";
+import { Logo } from "./components/Logo";
 
 const REPO = "https://github.com/Proofhaus/proofhaus";
 
@@ -17,7 +18,7 @@ export default function Landing() {
       <header className="lp-nav">
         <div className="lp-nav-in">
           <Link href="/" className="lp-brand">
-            <span className="lp-chev">&gt;</span>proofhaus<span className="cursor" />
+            <Logo height={30} />
           </Link>
           <nav className="lp-links" aria-label="sections">
             <a href="#how">how it works</a>
@@ -269,7 +270,10 @@ exit 0`}</pre>
 
       <footer className="lp-foot">
         <div className="lp-wrap lp-foot-in">
-          <span><b>proofhaus</b> economic security you run on every deploy</span>
+          <span className="lp-foot-brand">
+            <Logo height={22} />
+            <span>economic security you run on every deploy</span>
+          </span>
           <span>
             <a href={REPO} target="_blank" rel="noreferrer">github</a>
             <Link href="/try">try it</Link>
