@@ -93,6 +93,16 @@ export function Terminal() {
     file.text().then(setArtifactText);
   };
 
+  const selectMode = (next: Mode) => {
+    if (busy || next === mode) return;
+    clearTimers();
+    setMode(next);
+    setPhase("idle");
+    setData(null);
+    setShown([]);
+    setError(null);
+  };
+
   const run = useCallback(async () => {
     clearTimers();
     setScanId((n) => n + 1);
@@ -171,13 +181,13 @@ export function Terminal() {
 
         <div className="controls">
           <div className="seg" role="tablist" aria-label="target mode">
-            <button data-on={mode === "vulnerable"} onClick={() => !busy && setMode("vulnerable")} disabled={busy}>
+            <button data-on={mode === "vulnerable"} onClick={() => selectMode("vulnerable")} disabled={busy}>
               VULNERABLE
             </button>
-            <button data-on={mode === "hardened"} onClick={() => !busy && setMode("hardened")} disabled={busy}>
+            <button data-on={mode === "hardened"} onClick={() => selectMode("hardened")} disabled={busy}>
               HARDENED
             </button>
-            <button data-on={mode === "byo"} onClick={() => !busy && setMode("byo")} disabled={busy}>
+            <button data-on={mode === "byo"} onClick={() => selectMode("byo")} disabled={busy}>
               YOUR CONTRACT
             </button>
           </div>
