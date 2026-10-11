@@ -116,9 +116,11 @@ pnpm -C app dev                    # http://localhost:3000
 sample suite, and YOUR CONTRACT scans an artifact you drop in. The cover market panel is a local simulation of
 the pool economics; the onchain contracts are the Foundry-tested ones in `contracts/`.
 
-Live scans start anvil, so the scan route needs `pnpm` and `anvil` on the host. Where they are missing, as on a
-serverless deploy, the sample suite is served as a clearly labelled replay of a recorded engine run, and
-scanning your own contract asks you to run locally. Set `PROOFHAUS_REPLAY=1` to force replay mode, and
+Every scan starts anvil. Locally the route runs the engine source with your installed Foundry. On Vercel,
+`app/scripts/prepare-hosted.mjs` runs at build time: it downloads a pinned, hash-checked, statically linked
+anvil (Foundry 1.5.1, Alpine build), compiles the contract artifacts, and bundles the engine, so the hosted
+site runs real scans, including contracts you drop in. If the engine cannot start on a host, the sample suite
+falls back to a clearly labelled replay of a recorded run. Set `PROOFHAUS_REPLAY=1` to force that, and
 `NEXT_PUBLIC_SITE_URL` to your public URL so link previews resolve.
 
 ## On-chain market
