@@ -186,6 +186,13 @@ export function Terminal() {
           </button>
         </div>
 
+        {data?.replay && (
+          <div className="replay-note">
+            <b>REPLAY</b>
+            <span>recorded from a real engine run. Run locally for live scans and your own contracts.</span>
+          </div>
+        )}
+
         {mode === "byo" && phase !== "done" && (
           <div className="byo">
             <textarea

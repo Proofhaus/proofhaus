@@ -23,4 +23,5 @@ export interface PremiumQuote {
 export interface ScanResponse {
   report: ScanReport;
   quote: PremiumQuote;
+  replay?: boolean;
 }

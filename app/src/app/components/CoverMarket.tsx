@@ -40,7 +40,13 @@ export function CoverMarket({ coverageUsd, premiumUsd, riskMultiplier }: Props) 
 
   return (
     <div className="market">
-      <div className="htitle">Cover market</div>
+      <div className="htitle">
+        Cover market <span className="simtag">SIMULATION</span>
+      </div>
+      <p className="simnote">
+        A local model of the pool economics, not onchain activity. The Attestation and CoverPool contracts are
+        tested in Foundry and settle onchain once deployed.
+      </p>
       <div className="mgrid">
         <div className="mcol">
           <div className="mk">Annual premium</div>

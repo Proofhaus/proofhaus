@@ -378,3 +378,18 @@ a { color: var(--green); }
   .verdict { flex-wrap: wrap; }
   .verdict .msg { min-width: 0; }
 }
+
+.simtag {
+  margin-left: 10px;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  vertical-align: 1px;
+}
+.simnote { color: var(--dim); font-size: 13.5px; line-height: 1.6; margin: -4px 0 18px; max-width: 70ch; }
+
+.replay-note { display: flex; align-items: center; gap: 12px; margin-top: 16px; color: var(--dim); font-size: 13.5px; line-height: 1.5; }
+.replay-note b { color: #1a1204; background: var(--amber); padding: 3px 9px; border-radius: 5px; letter-spacing: 0.1em; font-size: 12px; flex: none; }

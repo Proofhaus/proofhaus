@@ -3,12 +3,20 @@ import { spawn } from "node:child_process";
 import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { RECORDED } from "../../lib/recorded";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const engineDir = () => join(process.cwd(), "..", "engine");
 const port = () => 8700 + Math.floor(Math.random() * 250);
+
+const forceReplay = () => process.env.PROOFHAUS_REPLAY === "1";
+// the host is missing pnpm or anvil, as on a serverless deploy
+const missingTooling = (msg: string) => /ENOENT|EACCES/.test(msg);
+
+const LOCAL_ONLY =
+  "Scanning your own contract needs the local engine. Clone the repo and run pnpm -C app dev. The hosted demo replays the sample suite only.";
 
 type CliResult = { ok: true; data: unknown } | { ok: false; error: string };
 
@@ -39,10 +47,15 @@ function runCli(args: string[]): Promise<CliResult> {
 // scan the built-in sample suite (vulnerable or hardened)
 export async function GET(req: NextRequest) {
   const hardened = req.nextUrl.searchParams.get("mode") === "hardened";
+  const replay = () => NextResponse.json({ ...RECORDED[hardened ? "hardened" : "vulnerable"], replay: true });
+  if (forceReplay()) return replay();
+
   const args = ["--json", "--port", String(port())];
   if (hardened) args.push("--hardened");
   const r = await runCli(args);
-  return r.ok ? NextResponse.json(r.data) : NextResponse.json({ error: r.error }, { status: 500 });
+  if (r.ok) return NextResponse.json(r.data);
+  if (missingTooling(r.error)) return replay();
+  return NextResponse.json({ error: r.error }, { status: 500 });
 }
 
 // scan a bring-your-own compiled artifact posted in the body
@@ -57,6 +70,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "body must include an { artifact } object" }, { status: 400 });
   }
 
+  if (forceReplay()) return NextResponse.json({ error: LOCAL_ONLY, code: "local_only" }, { status: 501 });
+
   const dir = mkdtempSync(join(tmpdir(), "ph-scan-"));
   try {
     const artifactPath = join(dir, "artifact.json");
@@ -66,6 +81,7 @@ export async function POST(req: NextRequest) {
 
     const r = await runCli(["--target", manifestPath, "--json", "--port", String(port())]);
     if (!r.ok) {
+      if (missingTooling(r.error)) return NextResponse.json({ error: LOCAL_ONLY, code: "local_only" }, { status: 501 });
       const noShape = /no supported target shape/i.test(r.error);
       return NextResponse.json({ error: r.error }, { status: noShape ? 422 : 500 });
     }
