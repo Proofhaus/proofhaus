@@ -6,6 +6,8 @@
   </picture>
 </p>
 
+<p align="center"><a href="https://proofhaus.vercel.app">proofhaus.vercel.app</a> · <a href="https://proofhaus.vercel.app/try">try it</a></p>
+
 **Economic security you run on every deploy.**
 
 Proofhaus forks your protocol into a sandbox, actually attacks it, and reports the
