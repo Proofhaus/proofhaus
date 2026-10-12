@@ -1,0 +1,82 @@
+/* pitch deck viewer: a fixed 1920x1080 canvas scaled to fit, with a full screen mode */
+.dk-root {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  color: #d3dfda;
+  font-family: Inter, system-ui, sans-serif;
+}
+.dk-root[data-idle="true"] { cursor: none; }
+
+.dk-stage { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.dk-frame { position: relative; overflow: hidden; background: #06080a; }
+.dk-canvas { width: 1920px; height: 1080px; transform-origin: top left; position: absolute; left: 0; top: 0; }
+
+/* the slide markup uses inline styles only, so give it the resets the slide format assumes */
+.dk-canvas > section { width: 1920px; height: 1080px; position: relative; overflow: hidden; box-sizing: border-box; line-height: 1.4; }
+.dk-canvas h1, .dk-canvas h2, .dk-canvas h3, .dk-canvas p { margin: 0; }
+.dk-canvas ul { margin: 0; padding-left: 44px; list-style: disc; }
+.dk-canvas li { margin-bottom: 14px; }
+.dk-canvas table { border-collapse: collapse; width: 100%; }
+.dk-canvas th, .dk-canvas td { padding: 20px 24px; border-bottom: 1px solid #1d2c28; text-align: left; font-weight: 500; }
+.dk-canvas th { font-weight: 600; }
+.dk-canvas img { display: block; }
+
+.dk-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #0a0f12;
+  border-top: 1px solid #1d2c28;
+  transition: opacity 0.25s ease;
+}
+.dk-bar button {
+  appearance: none;
+  font: inherit;
+  font-size: 15px;
+  color: #d3dfda;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #1d2c28;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.dk-bar button:hover:not(:disabled) { border-color: #0f7a52; background: rgba(47, 245, 160, 0.08); }
+.dk-bar button:disabled { color: #5c6b66; cursor: default; }
+.dk-bar .dk-full { color: #041b12; background: #2ff5a0; border-color: #2ff5a0; font-weight: 600; }
+.dk-bar .dk-full:hover:not(:disabled) { background: #5cf7b8; }
+.dk-count { font-variant-numeric: tabular-nums; color: #a3b4ae; font-size: 15px; min-width: 64px; text-align: center; }
+.dk-spacer { flex: 1; }
+.dk-hint { color: #7d8f89; font-size: 14px; }
+
+.dk-notes {
+  flex: none;
+  max-height: 22vh;
+  overflow: auto;
+  padding: 14px 20px;
+  background: #0a0f12;
+  border-top: 1px solid #1d2c28;
+  color: #d3dfda;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+/* in full screen the bar floats over the slide and hides when the pointer is still */
+.dk-root[data-full="true"] .dk-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 15, 18, 0.92);
+}
+.dk-root[data-full="true"][data-idle="true"] .dk-bar { opacity: 0; pointer-events: none; }
+.dk-root[data-full="true"] .dk-notes { display: none; }
+
+@media (max-width: 640px) {
+  .dk-hint { display: none; }
+}
